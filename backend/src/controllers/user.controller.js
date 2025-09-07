@@ -14,93 +14,91 @@ const generateTokensAndRefreshTokens=async(userId)=>{
         throw new Error("something went wrong while generating tokens and refresh tokens");
     }
 }
-const registerUser=async(req,res)=>{
-    try{
-        //first, Get user details from frontend
-        //validation - not empty
-        //check if user already exists : username,email
-        //check for images ,check for avatar
-        //upload them to cloudinary
-        //create user object - create entry in db
-        //remove password and refresh tokens field form tokens.
-        //check for user creation
-        //return response
+const registerUser = async (req, res) => {
+    try {
+        console.log("FILES RECEIVED:", req.files);
+        console.log("BODY RECEIVED:", req.body);
 
-        // console.log("FILES RECEIVED:", req.files);
-        // console.log("BODY RECEIVED:", req.body);
+        const { fullname, email, username, password } = req.body;
 
-        const {fullname,email,username,password}=req.body;
-        // console.log("email : ",email);
-    
-        if(fullname.trim()===""){
+        if (fullname.trim() === "") {
             return res.status(400).json({
-                message:"fullname is required",
-            })
+                message: "fullname is required",
+            });
         }
-        if(username.trim()===""){
+        if (username.trim() === "") {
             return res.status(400).json({
-                message:"username is required",
-            })
+                message: "username is required",
+            });
         }
-        if(email.trim()===""){
+        if (email.trim() === "") {
             return res.status(400).json({
-                message:"email is required",
-            })
+                message: "email is required",
+            });
         }
-        if(password.trim()===""){
+        if (password.trim() === "") {
             return res.status(400).json({
-                message:"password is required",
-            })
+                message: "password is required",
+            });
         }
-        const existedUser=await User.findOne({
-            $or:[{username},{email}]
+
+        const existedUser = await User.findOne({
+            $or: [{ username }, { email }],
         });
-        if(existedUser){
+        if (existedUser) {
             return res.status(409).json({
-                message:"user already exists"
-            })
+                message: "user already exists",
+            });
         }
-        const avatarLocalPath=req.files?.avatar[0]?.path;
-        const coverImageLocalPath=req.files?.coverImage?.[0]?.path;
-        if(!avatarLocalPath){
+
+        const avatarLocalPath = req.files?.avatar[0]?.path;
+        const coverImageLocalPath = req.files?.coverImage?.[0]?.path;
+
+        if (!avatarLocalPath) {
             return res.status(400).json({
-                message:"Avatar file is  required"
-            })
+                message: "Avatar file is required",
+            });
         }
-        const avatar=await cloudinaryUpload(avatarLocalPath);
-        let coverImage="";
-        if(coverImageLocalPath){
-           coverImage=await cloudinaryUpload(coverImageLocalPath);
+
+        const avatar = await cloudinaryUpload(avatarLocalPath);
+
+        let coverImage = "";
+        if (coverImageLocalPath) {
+            coverImage = await cloudinaryUpload(coverImageLocalPath);
         }
-        if(!avatar){
+
+        if (!avatar) {
             return res.status(400).json({
-                message:"Avatar is  required"
-            })
+                message: "Avatar is required",
+            });
         }
-        const user=await User.create({
+
+        const user = await User.create({
             fullname,
             username,
             email,
             password,
-            avatar:avatar.url,
-            coverImage:coverImage.url || "",
-        })
-        const createdUser=await User.findById(user._id).select(
+            avatar: avatar.url,
+            coverImage: coverImage.url || "",
+        });
+
+        const createdUser = await User.findById(user._id).select(
             "-password -refreshTokens"
-        )
-        if(!createdUser){
+        );
+
+        if (!createdUser) {
             return res.status(400).json({
-                message:"something went wrong while registering user"
-            })
+                message: "something went wrong while registering user",
+            });
         }
-        return res.status(201).json({createdUser});
-    }
-    catch(error){
-        console.log(error);
+
+        return res.status(201).json({ createdUser });
+    } catch (error) {
+        console.log("ERROR:", error);
         return res.status(500).json({ message: "Server error", error: error.message });
     }
+};
 
-}
 
 
 
