@@ -1,18 +1,16 @@
-import SignIn from "./components/SignIn.jsx"
-import {RouterProvider,Route,createBrowserRouter,createRoutesFromElements} from "react-router-dom"
-function App() {
-  const router=createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/" element={<SignIn/>}>
+import Login from "./components/Login.jsx";
+import SignIn from "./components/SignIn.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-      </Route>
-    )
-  )
+function App() {
   return (
-    <>
-      <RouterProvider router={router} ></RouterProvider>
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<SignIn />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
