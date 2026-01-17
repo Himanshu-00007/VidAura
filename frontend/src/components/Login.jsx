@@ -51,7 +51,7 @@ function Login() {
           placeholder="password"
         />
         </div>
-        <Button>Login</Button>
+        <Button type="submit">Login</Button>
       </form>
     </>
   );
