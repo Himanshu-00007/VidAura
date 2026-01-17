@@ -1,4 +1,5 @@
 import { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Input from "@mui/material/Input";
 import Button from "@mui/material/Button";
@@ -9,13 +10,14 @@ function Login() {
   const navigate = useNavigate();
   const submitHandler = (event) => {
     event.preventDefault();
-    const formData = new formData();
-    formData.append("username", username);
-    formData.append("email", email);
-    formData.append("password", password);
 
     axios
-      .post("https://vidaura.onrender.com/api/v1/users/login", formData)
+      .post(
+        "https://vidaura.onrender.com/api/v1/users/login",
+        {username,
+        email,
+        password}
+      )
       .then((res) => {
         navigate("/dashboard");
       })
@@ -28,28 +30,28 @@ function Login() {
     <>
       <form onSubmit={submitHandler}>
         <div>
-        <Input
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="username"
-        />
-       </div>
-       <div>
-        <Input
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="email"
-        />
+          <Input
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="username"
+          />
         </div>
         <div>
-        <Input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="password"
-        />
+          <Input
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="email"
+          />
+        </div>
+        <div>
+          <Input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="password"
+          />
         </div>
         <Button type="submit">Login</Button>
       </form>
