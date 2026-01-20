@@ -17,6 +17,7 @@ function Dashboard() {
       <>
         <div className="navbar">
           <Button onClick={logoutHandler}>Logout</Button>
+          <p>profile pic</p>
         </div>
       </>
     </div>
