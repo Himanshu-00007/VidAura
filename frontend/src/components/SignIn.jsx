@@ -38,7 +38,7 @@ function SignIn() {
     if (coverImage) formData.append("coverImage", coverImage);
 
     axios
-      .post("https://vidaura.onrender.com/api/v1/users/register", formData, {
+      .post("https://vidaura-1.onrender.com/api/v1/users/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
         timeout: 15000,
       })

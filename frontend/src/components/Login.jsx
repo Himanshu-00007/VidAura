@@ -13,7 +13,7 @@ function Login() {
 
     axios
       .post(
-        "https://vidaura.onrender.com/api/v1/users/login",
+        "https://vidaura-1.onrender.com/api/v1/users/login",
         {username,
         email,
         password}

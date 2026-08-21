@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 function Dashboard() {
     const navigate=useNavigate();
     const logoutHandler=()=>{
-        axios.post("https://vidaura.onrender.com/api/v1/users/logout",{},{withCredentials:true}).then((res)=>{
+        axios.post("https://vidaura-1.onrender.com/api/v1/users/logout",{},{withCredentials:true}).then((res)=>{
             navigate("/login");
         }).catch((error)=>{
             console.log(error);
