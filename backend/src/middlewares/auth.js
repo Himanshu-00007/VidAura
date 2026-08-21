@@ -4,7 +4,7 @@ dotenv.config();
 import {User} from "../models/user.model.js"
 export const verifyJWT=async(req,res,next)=>{
     try{
-        const token=req.cookies?.Tokens || req.header("Authorization").replace("Bearer ","");
+        const token=req.cookies?.Tokens || req.header("Authorization")?.replace("Bearer ","");
         if(!token){
             return res.status(400).json({
             message:"unauthorized token"
