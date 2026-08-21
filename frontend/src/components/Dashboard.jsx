@@ -4,12 +4,29 @@ import { useNavigate } from "react-router-dom";
 
 function Dashboard() {
     const navigate=useNavigate();
-    const logoutHandler=()=>{
-        axios.post("https://vidaura-1.onrender.com/api/v1/users/logout",{},{withCredentials:true}).then((res)=>{
-            navigate("/login");
-        }).catch((error)=>{
-            console.log(error);
-        })
+    const logoutHandler=async()=>{
+      try{
+        const token=localStorage.getItem("Tokens");
+        console.log(token);
+        await axios.post(
+        "https://vidaura-1.onrender.com/api/v1/users/logout",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+        },
+          withCredentials: true,
+      });
+      
+        localStorage.clear();
+        navigate("/login");
+      }
+      catch(error){
+        console.error("logout error",error.response?.data || error.message);
+      }
+        
+
+
     }
   return (
     <div>

@@ -11,7 +11,7 @@ function Login() {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    axios
+     axios
       .post(
         "https://vidaura-1.onrender.com/api/v1/users/login",
         {username,
@@ -19,6 +19,7 @@ function Login() {
         password}
       )
       .then((res) => {
+        localStorage.setItem("Tokens",res.data.Tokens);
         navigate("/dashboard");
       })
       .catch((error) => {
