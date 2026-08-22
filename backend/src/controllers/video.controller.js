@@ -5,8 +5,8 @@ const uploadVideo = async (req, res) => {
   try {
     const { title, description } = req.body;
 
-    const localVideoPath = req.files?.videoFile?.[0]?.path;
-    const localThumbnailPath = req.files?.thumbnail?.[0]?.path;
+    const localVideoPath = req.files?.videoFile?.[0]?.buffer;
+    const localThumbnailPath = req.files?.thumbnail?.[0]?.buffer;
 
     if (!localVideoPath) {
       return res.status(400).json({ message: "Video file is missing" });
