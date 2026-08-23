@@ -11,7 +11,7 @@ router.route("/video-update/:id").patch(verifyJWT,updateVideo);
 router.route("/video-delete/:id").delete(verifyJWT,deleteVideo);
 router.route("/like-video/:id").patch(verifyJWT,likeVideo);
 router.route("/dislike-video/:id").patch(verifyJWT,dislikeVideo);
-router.route("/get-user-videos").get(getUserVideos);
+router.route("/get-user-videos").get(verifyJWT,getUserVideos);
 router.route("/get-all-videos").get(getAllVideos);
 
 export default router;
