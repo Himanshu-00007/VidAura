@@ -223,10 +223,7 @@ const getUserVideos=async(req,res)=>{
     if(!userId){
       return res.status(400).json({ message: "usedId is required" });
     }
-    const userExists = await User.findById(userId);
-    if (!userExists) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    
     let {page=1,limit=10}=req.query;
     page=Number(page);
     limit=Number(limit);

@@ -11,6 +11,9 @@ function Dashboard() {
   const [videoFile, setVideoFile] = useState(null);
   const [thumbnail, setThumbnail] = useState(null);
   const [videos, setVideos] = useState([]);
+  
+  
+  const [activeVideo, setActiveVideo] = useState(null);
 
   useEffect(() => {
     const fetchUserVideos = async () => {
@@ -65,7 +68,6 @@ function Dashboard() {
 
   const logoutHandler = async () => {
     try {
-      console.log(token);
       await axios.post(
         "https://vidaura-1.onrender.com/api/v1/users/logout",
         {},
@@ -89,11 +91,9 @@ function Dashboard() {
       {/* Top Navigation */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-900/80 border-b border-slate-800">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-black bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight">
-              VidAura
-            </span>
-          </div>
+          <span className="text-2xl font-black bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent tracking-tight">
+            VidAura
+          </span>
           <Button
             onClick={logoutHandler}
             variant="outlined"
@@ -130,7 +130,6 @@ function Dashboard() {
 
           <form onSubmit={submitHandler} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Title Input */}
               <div className="space-y-2">
                 <label className="text-xs font-medium uppercase tracking-wider text-slate-400">
                   Video Title
@@ -144,7 +143,6 @@ function Dashboard() {
                 />
               </div>
 
-              {/* Description Input */}
               <div className="space-y-2">
                 <label className="text-xs font-medium uppercase tracking-wider text-slate-400">
                   Description
@@ -159,7 +157,6 @@ function Dashboard() {
               </div>
             </div>
 
-            {/* File Pickers */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <label className="text-xs font-medium uppercase tracking-wider text-slate-400">
@@ -186,22 +183,19 @@ function Dashboard() {
               </div>
             </div>
 
-            {/* Submit Action */}
             <div className="flex justify-end pt-2">
               <Button
                 type="submit"
                 variant="contained"
                 sx={{
-                  background:
-                    "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
+                  background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                   borderRadius: "0.75rem",
                   padding: "0.65rem 1.75rem",
                   fontWeight: 600,
                   textTransform: "none",
                   boxShadow: "0 4px 14px 0 rgba(99, 102, 241, 0.39)",
                   "&:hover": {
-                    background:
-                      "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
+                    background: "linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)",
                   },
                 }}
               >
@@ -234,7 +228,8 @@ function Dashboard() {
               {videos.map((vid) => (
                 <div
                   key={vid._id}
-                  className="group bg-slate-900/60 border border-slate-800/80 hover:border-slate-700 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
+                  onClick={() => setActiveVideo(vid)}
+                  className="group cursor-pointer bg-slate-900/60 border border-slate-800/80 hover:border-indigo-500/50 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
                 >
                   <div className="relative aspect-video w-full bg-slate-950 overflow-hidden">
                     <img
@@ -242,6 +237,16 @@ function Dashboard() {
                       alt={vid.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                     />
+                    
+                    {/* Play Button Overlay Icon */}
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 transition duration-300">
+                        <svg className="w-6 h-6 text-slate-950 fill-current ml-1" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
+                    </div>
+
                     <span className="absolute bottom-2 right-2 bg-black/75 backdrop-blur-sm text-slate-200 text-xs px-2 py-0.5 rounded-md font-mono">
                       {Math.round(vid.duration || 0)}s
                     </span>
@@ -262,6 +267,40 @@ function Dashboard() {
           )}
         </section>
       </main>
+
+      {/* Video Player Modal */}
+      {activeVideo && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+          onClick={() => setActiveVideo(null)}
+        >
+          <div 
+            className="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-4 flex items-center justify-between border-b border-slate-800">
+              <h3 className="font-semibold text-slate-100">{activeVideo.title}</h3>
+              <button 
+                onClick={() => setActiveVideo(null)}
+                className="text-slate-400 hover:text-white text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg transition"
+              >
+                Close ✕
+              </button>
+            </div>
+            <div className="relative aspect-video w-full bg-black">
+              <video
+                src={activeVideo.videoFile}
+                controls
+                autoPlay
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <div className="p-4 bg-slate-950/60">
+              <p className="text-sm text-slate-300">{activeVideo.description}</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
