@@ -218,7 +218,7 @@ const view = async (req, res) => {
 };
 const getUserVideos=async(req,res)=>{
   try{
-    const userId=req.params.id;
+    const userId=req.user.id;
     if(!userId){
       return res.status(400).json({ message: "usedId is required" });
     }
