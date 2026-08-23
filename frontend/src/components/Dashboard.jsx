@@ -26,7 +26,7 @@ function Dashboard() {
         );
         setVideos(res.data.videos || []);
       } catch (error) {
-        console.error("error fetching dadhboard videos", error);
+        console.error("error fetching dadhboard videos", error.response?.data || error.message);
       }
     };
     fetchUserVideos();

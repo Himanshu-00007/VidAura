@@ -1,5 +1,6 @@
 import { Video } from "../models/video.model.js";
 import { cloudinaryDelete, cloudinaryUpload } from "../utils/cloudinary.js";
+import {User} from "../models/user.model.js";
 
 const uploadVideo = async (req, res) => {
   try {
@@ -218,7 +219,7 @@ const view = async (req, res) => {
 };
 const getUserVideos=async(req,res)=>{
   try{
-    const userId=req.user._id;
+    const userId=req.user._id || req.user.id;
     if(!userId){
       return res.status(400).json({ message: "usedId is required" });
     }
