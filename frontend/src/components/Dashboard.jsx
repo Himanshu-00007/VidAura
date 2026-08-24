@@ -15,7 +15,7 @@ function Dashboard() {
   
   const [activeVideo, setActiveVideo] = useState(null);
 
-  useEffect(() => {
+   useEffect(() => {
     const fetchUserVideos = async () => {
       try {
         const res = await axios.get(
@@ -35,6 +35,26 @@ function Dashboard() {
     fetchUserVideos();
   }, [token]);
 
+
+  const deleteVideo=async(videoId)=>{
+    try{
+      await axios.delete(`https://vidaura-1.onrender.com/api/v1/videos/video-delete/${videoId}`,{
+        withCredentials:true,
+        headers:{
+          Authorization:`Bearer ${token}`,
+        },
+      })
+      setVideos((prevVideo)=>
+        prevVideo.filter((video)=>video._id!==videoId)
+      )
+      console.log("video deleted successfully");
+    }
+    catch(error){
+      console.error(error.response?.data || error.message);
+    }
+  }
+
+ 
   const submitHandler = async (e) => {
     e.preventDefault();
     if (!title || !description || !videoFile || !thumbnail) {
@@ -58,6 +78,7 @@ function Dashboard() {
         }
       );
       console.log(res.data);
+      setVideos((prevVideo)=>[...prevVideo,res.data.video]);
     } catch (error) {
       console.log(
         "video uploading error",
@@ -259,6 +280,7 @@ function Dashboard() {
                       <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
                         {vid.description}
                       </p>
+                      <Button onClick={(e)=>{ e.stopPropagation(); deleteVideo(vid._id)}} >DELETE</Button>
                     </div>
                   </div>
                 </div>
@@ -268,40 +290,43 @@ function Dashboard() {
         </section>
       </main>
 
-      {/* Video Player Modal */}
-      {activeVideo && (
-        <div 
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
-          onClick={() => setActiveVideo(null)}
-        >
+        {/* Video Player Modal */}
+        {activeVideo && (
           <div 
-            className="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+            onClick={() => setActiveVideo(null)}
           >
-            <div className="p-4 flex items-center justify-between border-b border-slate-800">
-              <h3 className="font-semibold text-slate-100">{activeVideo.title}</h3>
-              <button 
-                onClick={() => setActiveVideo(null)}
-                className="text-slate-400 hover:text-white text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg transition"
-              >
-                Close ✕
-              </button>
-            </div>
-            <div className="relative aspect-video w-full bg-black">
-              <video
-                src={activeVideo.videoFile}
-                controls
-                autoPlay
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="p-4 bg-slate-950/60">
-              <p className="text-sm text-slate-300">{activeVideo.description}</p>
+            <div 
+              className="bg-slate-900 border border-slate-800 rounded-2xl max-w-4xl w-full overflow-hidden shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="p-4 flex items-center justify-between border-b border-slate-800">
+                <h3 className="font-semibold text-slate-100">{activeVideo.title}</h3>
+                <button 
+                  onClick={() => setActiveVideo(null)}
+                  className="text-slate-400 hover:text-white text-sm bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg transition"
+                >
+                  Close ✕
+                </button>
+              </div>
+              <div className="relative aspect-video w-full bg-black">
+                <video
+                  src={activeVideo.videoFile}
+                  controls
+                  autoPlay
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="p-4 bg-slate-950/60">
+                <p className="text-sm text-slate-300">{activeVideo.description}</p>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </div>
+          
+        )}
+
+        
+      </div>
   );
 }
 
